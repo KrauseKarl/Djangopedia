@@ -1,0 +1,33 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+{% load cache %}
+
+{% block title %}Каталог{% endblock %}
+
+
+{% block note_list %}
+<div class="container">
+
+    <div class="row my-1" data-masonry='{"percentPosition": true }'>
+        {% for obj in object_list %}
+        <div class="col-4 my-1">
+            <a href="{% url 'note:note-detail' pk=obj.pk %}" class="card bg-body-tertiary">
+                <div class="card-body text-dark">
+                    <img src="{{ obj.image.first.image.url }}" class="card-img-top">
+                    <div class="card-title ">{{ obj.title }}</div>
+                    <div class="card-title float-end">
+                        <span>{{ obj.category}}</span>
+                    </div>
+                    <div class="cart-footer">
+                        {% for tag in obj.tag.all|slice:':4' %}
+                        <span class="btn btn-warning btn-sm"># {{ tag|lower }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

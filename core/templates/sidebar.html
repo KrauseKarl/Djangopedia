@@ -1,0 +1,91 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load cache %}
+
+{% block title %}Каталог{% endblock %}
+
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+<script src="/assets/js/jquery.toast.js"></script>
+<script>
+    var myToast = $.toast({
+        heading: 'Успешо!',
+        text: '{{ message }}',
+        showHideTransition: 'slide',
+        icon: '{{ message.tags|lower }}',
+        position: 'bottom-right'
+})
+</script>
+{% endfor %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-secondary">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline">Menu</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    <li>
+                        <a href="{% url 'note:category-list' %}" data-bs-toggle="collapse"
+                           class=" text-white nav-link px-0 align-middle">
+                            <i class="fs-4 bi-speedometer2"></i>
+                            <span class="ms-1 d-none d-sm-inline fs-4">категории
+                            </span>
+                        </a>
+                        <a href="{% url 'note:tag-list' %}" data-bs-toggle="collapse"
+                           class=" text-white nav-link px-0 align-middle">
+                            <i class="fs-4 bi-speedometer2"></i>
+                            <span class="ms-1 d-none d-sm-inline fs-4">теги
+                            </span>
+                        </a>
+                        <hr>
+                        <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                            {% for cat in categories|slice:':6' %}
+                            {% if cat.sub_categories %}
+                            <li class="w-100">
+                                <a href="{% url 'note:note-list' %}?category={{ cat.id }}"
+                                   class="text-white  nav-link px-0">
+                                    <b class="fs-5 bi-speedometer2">{{ cat }}</b>
+
+                                </a>
+                            </li>
+                            {% for sub_cat in cat.sub_categories.all %}
+                            <li class="w-100">
+                                <a href="{% url 'note:note-list' %}?category={{ sub_cat.id }}"
+                                   class="text-white  nav-link px-0">
+                                               <span class="d-none d-sm-inline">&#160;&#160;-&#160;{{ sub_cat|lower }}
+                                               </span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="w-100">
+                                <a href="{% url 'note:note-list' %}?category={{ cat.id }}"
+                                   class="text-white  nav-link px-0">
+                                    <span class="d-none d-sm-inline">&#160;&#160;&#160;{{ cat }}
+                                    </span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+        <div class="col py-3">
+            {% block note_list %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

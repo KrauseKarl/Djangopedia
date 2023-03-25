@@ -1,0 +1,33 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+{% load cache %}
+
+{% block title %}создать тег{% endblock %}
+
+
+{% block note_list %}
+<div class="container">
+    <form class="row mx-5 my-5" action="." method="post">
+        {% csrf_token %}
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="title" class="form-label">{{ form.title.label }}</label>
+                {% if form.errors %}
+                <div class="form-label bg-danger p-2"
+                     style="--bs-bg-opacity: .8; color: white; border-radius: 10px;" role="alert">
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <input type="text" class="form-control" name="title" id="title" placeholder="название тега ..">
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-success btn-lg">сохранить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
