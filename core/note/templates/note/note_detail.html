@@ -1,0 +1,107 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+{% load cache %}
+
+{% block title %}Каталог{% endblock %}
+
+
+{% block note_list %}
+<div class="container">
+    <dl class="row">
+        <dt class="col-sm-3">название</dt>
+        <dd class="col-sm-9 fs-5">
+            <div class="bg-light p-2 m-2 rounded">{{ object.title }}</div>
+        </dd>
+        <hr>
+        {% if object.url %}
+        <dt class="col-sm-3">сайт</dt>
+        <dd class="col-sm-9">
+            <h5>
+                <span class="bg-light p-2 m-2 rounded">
+                    <a href="{{ object.url }}" target="_blank">{{ object.url }}</a>
+                </span>
+            </h5>
+        </dd>
+        {% endif %}
+
+        <dt class="col-sm-3 text-truncate">категория</dt>
+        <dd class="col-sm-9">
+            <div class="bg-light p-3 m-2 rounded">
+                {% if object.category.parent_category %}
+                <a href="{% url 'note:note-list' %}?category={{ object.category.parent_category.id }}" target="_blank">
+                    {{ object.category.parent_category }}
+                </a>
+                /
+                <a href="{% url 'note:note-list' %}?category={{ object.category.id }}" target="_blank">
+                    {{ object.category }}
+                </a>
+                {% else %}
+                <a href="{% url 'note:note-list' %}?category={{ object.category.id }}" target="_blank">
+                    {{  object.category }}
+                </a>
+                {% endif %}
+            </div>
+        </dd>
+        {% if  object.tag.all%}
+        <dt class="col-sm-3 text-truncate">теги</dt>
+        <dd class="col-sm-9">
+            <div class="bg-light p-2 m-2 rounded">
+                {% for tag in object.tag.all %}
+                <span class="btn btn-secondary btn-sm">
+                <a class="text-decoration-none link-light" href="{% url 'note:note-list' %}?tag={{ tag.id }}"
+                   target="_blank"># {{ tag }}
+                </a>
+            </span>
+                {% endfor %}
+            </div>
+        </dd>
+        <hr>
+        {% endif %}
+        {% if object.image.all %}
+        <dt class="col-sm-3">изображения</dt>
+        <dd class="col-sm-9">
+            <div class="bg-light p-2 m-2 rounded">
+                {% for img in object.image.all %}
+                <a data-bs-toggle="modal" data-bs-target="#modal_{{ img.id}}">
+                    <img class="rounded" width="200" src="{{ img.image.url }}">
+                </a>
+                <div class="modal modal-xl fade" id="modal_{{ img.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{ img.title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img class="rounded" width="100%" height="100%" src="{{ img.image.url }}">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </dd>
+        <hr>
+        {% endif %}
+        <dt class="col-sm-3">содержание</dt>
+        <dd class="col-sm-9">
+            <div class="bg-light p-3 m-2 rounded">{{ object.description|safe }}</div>
+        </dd>
+    </dl>
+    <hr>
+    <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+        <a class="btn btn-warning btn-sm" href="{% url 'note:note-edit' object.pk %}">РЕДАКТИРОВАТЬ</a>
+        <a class="btn btn-danger btn-sm">УДАЛИТЬ</a>
+    </div>
+
+</div>
+
+
+<!-- Modal -->
+
+{% endblock %}
